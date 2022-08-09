@@ -3,6 +3,8 @@ Have your roblox game match real life weather.
 
 Currently support rain, temperature and clouds.
 
+Keep in mind modules are not included in the github source code!
+
 Thanks to: 
  * BoatBomber - WaterDrops
  * visualcrossing.com - Weather API 
