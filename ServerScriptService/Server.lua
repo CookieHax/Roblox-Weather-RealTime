@@ -6,19 +6,18 @@ local CloudsModule = require(ReplicatedStorage.Common.CloudsModule)
 
 local firstBootup = false
 local ApiKey = "" --Please don't share this! :-)
-local Location = "Dryhope" --E.g: "London", "New York", "Paris", "Tokyo" - You may go into more detail. E.g: Tusayan
+local Location = "Reading" --E.g: "London", "New York", "Paris", "Tokyo" - You may go into more detail. E.g: Tusayan
 local DataUnits = "uk" --E.g: us, uk, metric
 
 local function getWeather()
 	local url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"..Location.."/today?unitGroup="..DataUnits.."&include=days&key="..ApiKey.."&contentType=json"
-	print(url)
-	local response = HttpService:GetAsync(url)
+        local response = HttpService:GetAsync(url)
 	local data = HttpService:JSONDecode(response)
 	return data
 end
 
 local function UpdateBoard(data)
-	local Board = game.Workspace.DataBoard
+	local Board = game.Workspace:WaitForChild("DataBoard")
 	local Frame = Board.SurfaceGui.Frame
 	Frame.Conditions.Text = "Conditions: ".. data.days[1].conditions
 	Frame.Temp.Text = "Temperature: ".. data.days[1].temp
@@ -37,16 +36,16 @@ function GenerateWeather()
 		{
 			cover = data.days[1].cloudcover / 100; 
 		})		
-	Lighting.SunRays.Intensity = data.days[1].temp / 100
+	Lighting.SunRays.Intensity = data.days[1].temp / 95
 	if data.days[1].preciptype ~= nil then 
 		for i,v in ipairs(data.days[1].preciptype)  do
 			if v == "rain" then
 				local Settings = {
 					Rate = data.days[1].precip,
-					Size = 0.08,
+					Size = 0.075,
 					Tint = Color3.fromRGB(226, 244, 255),
-					Fade = 1.5,
-					UpdateFreq = 1 / 45,
+					Fade = 4.5,
+					UpdateFreq = 1 / 65,
 				}
 				ReplicatedStorage.Common.Remote_Events.RainAction:FireAllClients(true, Settings)
 			else 
@@ -58,6 +57,6 @@ function GenerateWeather()
 end
 
 GenerateWeather() --Generate the weather on startup.
-while wait(60) do 
+while wait(35) do 
 	GenerateWeather() --Generate the weather.	
 end
